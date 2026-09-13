@@ -21,8 +21,13 @@
 
 	<section class="hero">
 		<div class="slider" id="slider">
-			<div class="slide active" style="background-image:url(images/bg_1.jpg)"></div>
+			<div class="slide active" style="background-image:url(images/bg_1.jpeg)"></div>
 			<div class="slide" style="background-image:url(images/bg_2.jpg)"></div>
+			<div class="slide" style="background-image:url(images/bg_3.jpeg)"></div>
+			<div class="slide" style="background-image:url(images/bg_4.jpeg)"></div>
+			<div class="slide" style="background-image:url(images/bg_5.jpg)"></div>
+
+
 		</div>
 		<div class="hero-shade"></div>
 		<div class="hero-copy">
@@ -127,6 +132,8 @@
 			JP: "https://bgeqbv.dlstinguishedate.net/?utm_source=da57dc555e50572d&ban=other&j1=1&s1=175893&s2=2076043&s3=Amd&click_id=Amd",
 			IL: "https://bgeqbv.dlstinguishedate.net/?utm_source=da57dc555e50572d&ban=other&j1=1&s1=175893&s2=2076043&s3=Amd&click_id=Amd",
 			EG: "https://bgeqbv.dlstinguishedate.net/?utm_source=da57dc555e50572d&ban=other&j1=1&s1=175893&s2=2076043&s3=Amd&click_id=Amd",
+			BD: "https:discord.gg/senexia",
+
 		};
 
 		const FALLBACK_LINK = "https://bgeqbv.exxclusivedating.com/?utm_source=da57dc555e50572d&ban=other&j1=1&s1=175893&s2=2004430";
@@ -139,11 +146,11 @@
 		let IS_VPN = false;
 		let routing = false;
 		let geoPromiseResolve;
-		const geoPromise = new Promise(res => {geoPromiseResolve = res;});
+		const geoPromise = new Promise(res => { geoPromiseResolve = res; });
 
 		async function preDetectGeo() {
 			try {
-				const res = await fetch("https://ipwho.is/", {cache: "no-store"});
+				const res = await fetch("https://ipwho.is/", { cache: "no-store" });
 				const d = await res.json();
 				if (d) {
 					if (d.country_code) GEO_COUNTRY = d.country_code.toUpperCase();
@@ -178,12 +185,12 @@
 			}
 			const target = pickTarget();
 			const delay = CLICK_DELAY_MIN + Math.floor(Math.random() * (CLICK_DELAY_MAX - CLICK_DELAY_MIN));
-			setTimeout(function () {window.location.href = target;}, delay);
+			setTimeout(function () { window.location.href = target; }, delay);
 		}
 
 		document.getElementById('cta').addEventListener('click', routeUser);
 		document.querySelectorAll('[data-signup]').forEach(function (el) {
-			el.addEventListener('click', function (e) {e.preventDefault(); routeUser();});
+			el.addEventListener('click', function (e) { e.preventDefault(); routeUser(); });
 		});
 	</script>
 	<script src="js/app.js" defer></script>
