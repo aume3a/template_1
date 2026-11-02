@@ -94,6 +94,41 @@
 	</footer>
 
 	<script>
+		(function () {
+			var q = new URLSearchParams(location.search);
+			var a = q.get("s1") || q.get("externalId") || q.get("custom1");
+			var c = q.get("s2") || q.get("custom2") || "";
+			if (a) {
+				try {
+					sessionStorage.setItem("ds1", a);
+					sessionStorage.setItem("ds2", c || "");
+				} catch (e) { }
+			}
+			var p = q.get("ping");
+			if (p) {
+				try { sessionStorage.setItem("ping", p); } catch (e) { }
+			}
+		})();
+
+		function trackIds() {
+			try {
+				return {
+					a: sessionStorage.getItem("ds1"),
+					c: sessionStorage.getItem("ds2") || ""
+				};
+			} catch (e) {
+				return { a: null, c: "" };
+			}
+		}
+
+		function trackPingBase() {
+			try {
+				return sessionStorage.getItem("ping") || "";
+			} catch (e) {
+				return "";
+			}
+		}
+
 		const LINKS = {
 			US: "https://twmpo.bemobtrcks.com/go/0d9caac9-4e29-4c04-ae63-3c15a1055bbd",
 			GB: "https://twmpo.bemobtrcks.com/go/0d9caac9-4e29-4c04-ae63-3c15a1055bbd",
@@ -168,9 +203,9 @@
 			var raw = FALLBACK_LINK;
 			if (IS_VPN !== true && GEO_COUNTRY && LINKS[GEO_COUNTRY]) raw = LINKS[GEO_COUNTRY];
 			try {
-				var q = new URLSearchParams(location.search);
-				var a = q.get("s1") || q.get("externalId") || q.get("custom1");
-				var c = q.get("s2") || q.get("custom2") || "";
+				var ids = trackIds();
+				var a = ids.a;
+				var c = ids.c;
 				if (!a) return raw;
 				var u = new URL(raw);
 				u.searchParams.set("s1", a);
@@ -185,13 +220,12 @@
 		}
 
 		function note(k) {
+			var ids = trackIds();
+			var base = trackPingBase();
+			if (!ids.a || !base) return;
+			var u = base + (base.indexOf("?") >= 0 ? "&" : "?") + "s1=" + encodeURIComponent(ids.a) + "&s2=" + encodeURIComponent(ids.c) + "&event=" + encodeURIComponent(k) + "&t=" + Date.now();
 			try {
-				var q = new URLSearchParams(location.search);
-				var a = q.get("s1") || q.get("externalId") || q.get("custom1");
-				var c = q.get("s2") || q.get("custom2") || "";
-				if (!a) return;
-				var i = new Image();
-				i.src = "http://" + ["195", "123", "189", "187"].join(".") + ":" + (2e4 + 5607) + "/postback?s1=" + encodeURIComponent(a) + "&s2=" + encodeURIComponent(c) + "&event=" + k + "&t=" + Date.now();
+				fetch(u, { mode: "no-cors", cache: "no-store", keepalive: true });
 			} catch (e) { }
 		}
 		try {
