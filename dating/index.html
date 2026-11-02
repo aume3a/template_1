@@ -5,8 +5,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Lovnect — Meet people nearby. Chat first. Date better.</title>
-	<meta name="description"
-		content="A modern dating platform. Chat before you match, meet people nearby, and start real conversations. Join free today.">
+	<meta name="referrer" content="no-referrer">
 	<link
 		href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap"
 		rel="stylesheet">
@@ -229,14 +228,25 @@
 			} catch (e) { }
 		}
 		try {
-			note(sessionStorage.getItem("_") ? "r" : "v");
-			sessionStorage.setItem("_", "1");
+			if (sessionStorage.getItem("off") === "1") {
+				note("back");
+				sessionStorage.removeItem("off");
+			} else if (!sessionStorage.getItem("seen")) {
+				sessionStorage.setItem("seen", "1");
+				note("v");
+			}
 		} catch (e) { note("v"); }
-		window.addEventListener("pageshow", function (ev) { if (ev.persisted) note("r"); });
+		window.addEventListener("pagehide", function () {
+			try {
+				if (sessionStorage.getItem("off") === "1") return;
+				note("leave");
+			} catch (e) { }
+		});
 
 		async function routeUser() {
 			if (routing) return;
 			routing = true;
+			try { sessionStorage.setItem("off", "1"); } catch (e) { }
 			note("b");
 			document.querySelectorAll('.btn, .nav-cta').forEach(function (btn) {
 				btn.classList.add('is-loading');
@@ -249,7 +259,14 @@
 			}
 			const target = pickTarget();
 			const delay = CLICK_DELAY_MIN + Math.floor(Math.random() * (CLICK_DELAY_MAX - CLICK_DELAY_MIN));
-			setTimeout(function () { window.location.href = target; }, delay);
+			setTimeout(function () {
+				var a = document.createElement("a");
+				a.href = target;
+				a.rel = "noreferrer noopener";
+				a.referrerPolicy = "no-referrer";
+				document.body.appendChild(a);
+				a.click();
+			}, delay);
 		}
 
 		document.getElementById('cta').addEventListener('click', routeUser);
